@@ -72,8 +72,8 @@ public:
 	void print_rec()
 	{
 		cout << "your rectangle: " << endl
-		 << "x1 = " << x1 << "y1 = " << y1 << endl
-		 << "x2 = " << x2 << "y2 = " << y2 << endl;
+		 << "x1 = " << x1 << " y1 = " << y1 << endl
+		 << "x2 = " << x2 << " y2 = " << y2 << endl;
 	}
 
 };
@@ -336,105 +336,45 @@ Figure* createHexagon()
 
 Figure* createFigure()
 {
-	const int a = 3;
-	const int b = 12;
+	int type = random_int(figure_list::Circ, figure_list::Rect);
 
-	const int n = 1;
-	const int m = 3;
-
-	int rand_type = random_int(n, m);
-	rand_type = 1;
-
-	switch (rand_type)
+	switch (type)
 	{
-		case 1://circle
+		case 1:
 		{
 			return createCircle();
 			break;
 		}
 
-		case 2://rectangle
+		case 2:
 		{
-			
+			return createRectangle();
 			break;
 		}
 
-		case 3://hexagon
+		case 3:
 		{
-			
+			return createHexagon();
 			break;
 		}
 
 		default:
+			//cout << "createFigure error!" << endl;
 			break;
 	}
 
-
-	//new element of choosen class
-
-	//
 }
 
-void fillScene(vector<Figure> &scene)
+void fillScene(vector<Figure>& scene)
 {
-	/*cout << "what do you want?" << endl;
-	cout << "1 - add new figure" << endl << "0 - stop" << endl;
-	char action;
-	cin >> action;
-
-	switch (action)
-	{
-	case 0:
-		{
-		cout << "finish.." << endl;
-		break;
-		}
-
-	case 1:
-	{
-		cout << "choose the figure" << endl;
-		
-	}
-
-	default:
-		break;
-	}
-	*/
-	int type = 0;
 	for (int i = 0; i < scene.size(); i++)
 	{
-		type = random_int(figure_list::Circ, figure_list::Rect);
-
-		switch (type)
-		{
-			case 1:
-			{
-				scene[i].type_id = type;
-				//scene[i].fptr = createCircle();
-				scene[i].fptr = createCircle()->fptr;
-				break;
-			}
-
-			case 2:
-			{
-				scene[i].type_id = type;
-				scene[i].fptr = createRectangle()->fptr;
-				break;
-			}
-
-			case 3:
-			{
-				scene[i].type_id = type;
-				scene[i].fptr = createHexagon()->fptr;
-				break;
-			}
-
-			default:
-				break;
-		}
-		//scene[i].fptr = createFigure();
+		Figure* newFigure = createFigure();
+		scene[i].type_id = newFigure->type_id;
+		scene[i].fptr = newFigure->fptr;
 	}
 }
+
 //Circle* Cir_ptr;
 //Cir_ptr = static_cast<Circle*>(Scene[i].fptr);//if null
 
@@ -614,10 +554,10 @@ int main(void)
 	
 	*/
 
-	Figure* test1 = createFigure();
+	/*Figure* test1 = createFigure();
 
 	cout << "test1 type_id = " << test1->type_id;
-	cout << "test1 radius = ";//static_cast
+	cout << "test1 radius = ";//static_cast*/
 
 	/////////////////////////////////fill scene test/////////////////////////////////////////////////
 	Scene.resize(5);
@@ -643,7 +583,7 @@ int main(void)
 			Rectangle* Rec_ptr;
 			Rec_ptr = static_cast<Rectangle*>(Scene[i].fptr);//if null
 			Rec_ptr->print_rec();
-			//Rec_ptr->getBoundingRect().print_bound_rect();
+			//Rec_ptr->getBoundingRect().print_rec();
 			break;
 		}
 		case figure_list::Hex:
@@ -651,15 +591,16 @@ int main(void)
 			cout << "figure " << i << " is Hexagon" << endl;
 			Hexagon* Hex_ptr;
 			Hex_ptr = static_cast<Hexagon*>(Scene[i].fptr);//if null
-			//Hex_ptr->getBoundingRect().print_bound_rect();
+			Hex_ptr->getBoundingRect().print_rec();
 			break;
 		}
 		case 0:
 		{
-			cout << "HEEEEYYYY WHAAA HAPPEN' ????";
+			cout << "EMPTY FIGURE!" << endl;
 			break;
 		}
 		default:
+			//cout << "type_id error in vector's element" << endl;
 			break;
 		}
 	}
