@@ -4,6 +4,16 @@
 
 using namespace std;
 
+enum figure_list
+{
+	Empty = 0,
+	First = 1,
+	Circ = First,
+	Rect,
+	Hex,
+	Last
+};
+
 class Rectangle {
 public:
 	double x1;//x_topleft
@@ -217,17 +227,8 @@ public:
 class Figure
 {
 public:
-	int type_id = 0;//enum 
+	int type_id = figure_list::Empty;//enum 
 	void* fptr = nullptr;
-};
-
-enum figure_list
-{
-	First = 1,
-	Circ = First,
-	Rect, 
-	Hex, 
-	Last
 };
 
 bool intersection(Rectangle a, Rectangle b)
@@ -340,19 +341,19 @@ Figure* createFigure()
 
 	switch (type)
 	{
-		case 1:
+		case figure_list::Circ:
 		{
 			return createCircle();
 			break;
 		}
 
-		case 2:
+		case figure_list::Rect:
 		{
 			return createRectangle();
 			break;
 		}
 
-		case 3:
+		case figure_list::Hex:
 		{
 			return createHexagon();
 			break;
@@ -375,189 +376,56 @@ void fillScene(vector<Figure>& scene)
 	}
 }
 
-//Circle* Cir_ptr;
-//Cir_ptr = static_cast<Circle*>(Scene[i].fptr);//if null
+double TotalSquareUsed(vector<Figure>& scene)
+{
+	double TotalSquare = 0;
+
+	for (int i = 0; i < scene.size(); i++)
+	{
+		switch (scene[i].type_id)
+		{
+		case figure_list::Circ:
+		{
+			
+			Circle* Cir_ptr;
+			Cir_ptr = static_cast<Circle*>(scene[i].fptr);
+			TotalSquare += Cir_ptr->getSquare();
+			break;
+		}
+		case figure_list::Rect:
+		{
+			
+			Rectangle* Rec_ptr;
+			Rec_ptr = static_cast<Rectangle*>(scene[i].fptr);
+			TotalSquare += Rec_ptr->getSquare();
+			break;
+		}
+		case figure_list::Hex:
+		{
+			
+			Hexagon* Hex_ptr;
+			Hex_ptr = static_cast<Hexagon*>(scene[i].fptr);
+			TotalSquare += Hex_ptr->getSquare();
+			break;
+		}
+		case figure_list::Empty:
+		{
+			TotalSquare += 0;
+			break;
+		}
+		default:
+			//cout << "type_id error in vector's element" << endl;
+			break;
+		}
+	}
+	
+	return TotalSquare;
+}
 
 
 int main(void)
 {
 	vector<Figure> Scene;
-	/*
-	Scene.resize(5);
-
-	Circle Cir_1;
-	Cir_1.setCoordinates(3, 4);
-	Cir_1.setRadius(2);
-
-	Circle Cir_2;
-	Cir_2.setCoordinates(7, 8);
-	Cir_2.setRadius(1);
-
-	Circle Cir_3;
-	Cir_3.setCoordinates(3, 12);
-	Cir_3.setRadius(2);
-
-	Circle Cir_4;
-	Cir_4.setCoordinates(3, 7);
-	Cir_4.setRadius(1);
-
-	Rectangle Rec_1;
-	Rec_1.x1 = 8;
-	Rec_1.y2 = 6;
-	Rec_1.x2 = 14;
-	Rec_1.y1 = 3;
-
-	Rectangle Rec_2;
-	Rec_2.x1 = 17;
-	Rec_2.y2 = 8;
-	Rec_2.x2 = 20;
-	Rec_2.y1 = 5;
-
-	Rectangle Rec_3;
-	Rec_3.x1 = 11;
-	Rec_3.y2 = 9;
-	Rec_3.x2 = 16;
-	Rec_3.y1 = 5;
-
-	Rectangle Rec_4;
-	Rec_4.x1 = 14;
-	Rec_4.y2 = 3;
-	Rec_4.x2 = 16;
-	Rec_4.y1 = 1;
-
-	Hexagon Hex_1;
-	Hex_1.bRadius = 6;
-	Hex_1.length = 6;
-	Hex_1.sRadius = Hex_1.length * (sqrt(3) / 2);
-
-	Scene[0].type_id = 1;
-	Scene[0].fptr = &Cir_1;
-
-	Scene[1].type_id = 1;
-	Scene[1].fptr = &Cir_2;
-
-	Scene[2].type_id = 2;
-	Scene[2].fptr = &Rec_1;
-
-	Scene[3].type_id = 2;
-	Scene[3].fptr = &Rec_2;
-
-	Scene[4].type_id = 3;
-	Scene[4].fptr = &Hex_1;
-	*/
-
-	/*if ((Scene[0].type_id == figure_list::Circ) && (Scene[0].fptr != nullptr))
-	{
-		// Scene[0].fptr  void*
-		// void* ==> Circle*
-		// int a;
-		// char c = (char)a;
-		Circle* c_ptr;
-		c_ptr = static_cast<Circle*>(Scene[0].fptr);//if null
-		cout << "circle radius: " << c_ptr->getRadius() << endl;
-
-	}
-
-	double used_square = 0;
-	for (int i = 0; i < Scene.size(); i++)
-	{
-		switch (Scene[i].type_id)
-		{
-			case figure_list::Circ:
-			{
-				cout << "figure " << i << " is Circle" << endl;
-				Circle* Cir_ptr;
-				Cir_ptr = static_cast<Circle*>(Scene[i].fptr);//if null
-				cout << "Figure " << i << " Square = " << Cir_ptr->getSquare() << endl;
-				used_square += Cir_ptr->getSquare();
-				break;
-			}
-			case figure_list::Rect:
-			{
-				cout << "figure " << i << " is Rectangle" << endl;
-				Rectangle* Rec_ptr;
-				Rec_ptr = static_cast<Rectangle*>(Scene[i].fptr);//if null
-				cout << "Figure " << i << " Square = " << Rec_ptr->getSquare() << endl;
-				used_square += Rec_ptr->getSquare();
-				break;
-			}
-			case figure_list::Hex:
-			{
-				cout << "figure " << i << " is Hexagon" << endl;
-				Hexagon* Hex_ptr;
-				Hex_ptr = static_cast<Hexagon*>(Scene[i].fptr);//if null
-				cout << "Figure " << i << " Square = " << Hex_ptr->getSquare() << endl;
-				used_square += Hex_ptr->getSquare();
-				break;
-			}
-			case 0:
-			{
-				break;
-			}
-			default:
-				break;
-		}
-	}
-	cout << "Total Square used: " << used_square << endl;
-	*/
-	cout << endl << endl;
-
-	/////////////////////////////////rectangles/////////////////////////////////////////////////
-	/*
-	cout << endl << "	RECTANGLES TEST" << endl;
-
-	if (intersection(Rec_1, Rec_2)){
-		cout << "intersection" << endl;
-	}
-	else{
-		cout << "no intersection" << endl;
-	}
-
-	if (intersection(Rec_1, Rec_3)){
-		cout << "intersection" << endl;
-	}
-	else{
-		cout << "no intersection" << endl;
-	}
-
-	if (intersection(Rec_1, Rec_4)){
-		cout << "intersection" << endl;
-	}
-	else{
-		cout << "no intersection" << endl;
-	}
-	//////////////////////////////////circles////////////////////////////////////////////////
-	
-	cout << endl << "	CIRLES TEST" << endl;
-	
-	if (intersection(Cir_1.getBoundingRect(), Cir_2.getBoundingRect())) {
-		cout << "intersection" << endl;
-	}
-	else {
-		cout << "no intersection" << endl;
-	}
-
-	if (intersection(Cir_1.getBoundingRect(), Cir_3.getBoundingRect())) {
-		cout << "intersection" << endl;
-	}
-	else {
-		cout << "no intersection" << endl;
-	}
-
-	if (intersection(Cir_1.getBoundingRect(), Cir_4.getBoundingRect())) {
-		cout << "intersection" << endl;
-	}
-	else {
-		cout << "no intersection" << endl;
-	}
-	
-	
-	*/
-
-	/*Figure* test1 = createFigure();
-
-	cout << "test1 type_id = " << test1->type_id;
-	cout << "test1 radius = ";//static_cast*/
 
 	/////////////////////////////////fill scene test/////////////////////////////////////////////////
 	Scene.resize(5);
@@ -569,44 +437,44 @@ int main(void)
 		cout << "type: " << Scene[i].type_id << endl;
 		switch (Scene[i].type_id)
 		{
-		case figure_list::Circ:
-		{
-			cout << "figure " << i << " is Circle" << endl;
-			Circle* Cir_ptr;
-			Cir_ptr = static_cast<Circle*>(Scene[i].fptr);//if null
-			Cir_ptr->getBoundingRect().print_rec();
-			break;
-		}
-		case figure_list::Rect:
-		{
-			cout << "figure " << i << " is Rectangle" << endl;
-			Rectangle* Rec_ptr;
-			Rec_ptr = static_cast<Rectangle*>(Scene[i].fptr);//if null
-			Rec_ptr->print_rec();
-			//Rec_ptr->getBoundingRect().print_rec();
-			break;
-		}
-		case figure_list::Hex:
-		{
-			cout << "figure " << i << " is Hexagon" << endl;
-			Hexagon* Hex_ptr;
-			Hex_ptr = static_cast<Hexagon*>(Scene[i].fptr);//if null
-			Hex_ptr->getBoundingRect().print_rec();
-			break;
-		}
-		case 0:
-		{
-			cout << "EMPTY FIGURE!" << endl;
-			break;
-		}
-		default:
-			//cout << "type_id error in vector's element" << endl;
-			break;
+			case figure_list::Circ:
+			{
+				cout << "figure " << i << " is Circle" << endl;
+				Circle* Cir_ptr;
+				Cir_ptr = static_cast<Circle*>(Scene[i].fptr);//if null
+				Cir_ptr->getBoundingRect().print_rec();
+				break;
+			}
+			case figure_list::Rect:
+			{
+				cout << "figure " << i << " is Rectangle" << endl;
+				Rectangle* Rec_ptr;
+				Rec_ptr = static_cast<Rectangle*>(Scene[i].fptr);//if null
+				Rec_ptr->print_rec();
+				//Rec_ptr->getBoundingRect().print_rec();
+				break;
+			}
+			case figure_list::Hex:
+			{
+				cout << "figure " << i << " is Hexagon" << endl;
+				Hexagon* Hex_ptr;
+				Hex_ptr = static_cast<Hexagon*>(Scene[i].fptr);//if null
+				Hex_ptr->getBoundingRect().print_rec();
+				break;
+			}
+			case figure_list::Empty:
+			{
+				cout << "EMPTY FIGURE!" << endl;
+				break;
+			}
+			default:
+				//cout << "type_id error in vector's element" << endl;
+				break;
 		}
 	}
 	
 	
-
+	cout << "Total Square Used = " << TotalSquareUsed(Scene) << endl;
 
 
 
