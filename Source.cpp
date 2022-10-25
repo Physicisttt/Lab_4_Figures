@@ -81,7 +81,7 @@ public:
 
 	void print_rec()
 	{
-		cout << "your rectangle: " << endl
+		cout << "bounding rectangle: " << endl
 		 << "x1 = " << x1 << " y1 = " << y1 << endl
 		 << "x2 = " << x2 << " y2 = " << y2 << endl;
 	}
@@ -282,9 +282,9 @@ Figure* createRectangle()
 
 	Rectangle* newRectangle = new Rectangle;
 	newRectangle->x1 = random_int(left, right);
-	newRectangle->y2 = random_int(left, right);
-	newRectangle->x2 = random_int(left, right);
+	newRectangle->x2 = random_int(newRectangle->x1, right);//(newRectangle->x1 + 1)???
 	newRectangle->y1 = random_int(left, right);
+	newRectangle->y2 = random_int(newRectangle->y1, right);//(newRectangle->y1 + 1)???
 
 	newFigure->fptr = newRectangle;
 
@@ -450,8 +450,8 @@ int main(void)
 				cout << "figure " << i << " is Rectangle" << endl;
 				Rectangle* Rec_ptr;
 				Rec_ptr = static_cast<Rectangle*>(Scene[i].fptr);//if null
-				Rec_ptr->print_rec();
-				//Rec_ptr->getBoundingRect().print_rec();
+				//Rec_ptr->print_rec();
+				Rec_ptr->getBoundingRect().print_rec();
 				break;
 			}
 			case figure_list::Hex:
