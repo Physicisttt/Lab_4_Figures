@@ -281,15 +281,17 @@ Figure* createRectangle()
 	int right = 20;
 
 	Rectangle* newRectangle = new Rectangle;
+
 	newRectangle->x1 = random_int(left, right);
-	newRectangle->x2 = random_int(newRectangle->x1, right);//(newRectangle->x1 + 1)???
 	newRectangle->y1 = random_int(left, right);
-	newRectangle->y2 = random_int(newRectangle->y1, right);//(newRectangle->y1 + 1)???
+	int len = random_int(left, right);
+	int wid = random_int(left, right);
+	newRectangle->x2 = newRectangle->x1 + len;
+	newRectangle->y2 = newRectangle->y1 + wid;
 
 	newFigure->fptr = newRectangle;
 
 	return newFigure;
-
 }
 
 Figure* createCircle()
@@ -364,15 +366,89 @@ Figure* createFigure()
 			break;
 	}
 
+	return nullptr;
+}
+
+Rectangle Bounding_Rect(Figure* f)
+{
+	switch (f->type_id)
+	{
+		case figure_list::Circ:
+		{
+
+			Circle* Cir_ptr;
+			Cir_ptr = static_cast<Circle*>(f->fptr);
+			return Cir_ptr->getBoundingRect();
+			break;
+		}
+		case figure_list::Rect:
+		{
+
+			Rectangle* Rec_ptr;
+			Rec_ptr = static_cast<Rectangle*>(f->fptr);
+			return Rec_ptr->getBoundingRect();
+			break;
+		}
+		case figure_list::Hex:
+		{
+
+			Hexagon* Hex_ptr;
+			Hex_ptr = static_cast<Hexagon*>(f->fptr);
+			return Hex_ptr->getBoundingRect();
+			break;
+		}
+		default:
+			//cout << "type_id error in vector's element" << endl;
+			break;
+	}
+}
+
+bool Scene_Intersection(Figure* f, vector<Figure>& scene)
+{
+	for (int i = 0; i < scene.size(); i++)
+	{
+		if (scene[i].fptr != nullptr)//not empty figure
+		{
+			Figure* oldFigure = &scene[i];
+			if (intersection(Bounding_Rect(f), Bounding_Rect(oldFigure)))
+			{
+				return true;
+			}
+		}
+		else//empty figure ---> no intersection
+		{
+			
+		}
+	}
+
+	return false;
+	//return true; //intersection
+	//return false; // no intersection
 }
 
 void fillScene(vector<Figure>& scene)
 {
 	for (int i = 0; i < scene.size(); i++)
 	{
-		Figure* newFigure = createFigure();
-		scene[i].type_id = newFigure->type_id;
-		scene[i].fptr = newFigure->fptr;
+		bool flag = false;
+		int attempts = 0;
+		while (!flag)
+		{
+			attempts++;
+			if (attempts >= 100)
+			{
+				cout << ">100 attempts, something may be wrong!!!" << endl;
+			}
+
+			Figure* newFigure = createFigure();
+			if (!Scene_Intersection(newFigure, scene))
+			{
+				cout << "succesfully created figure "<< i << " on " << attempts << " attempt" << endl;
+				flag = true;
+				scene[i].type_id = newFigure->type_id;
+				scene[i].fptr = newFigure->fptr;
+			}
+		}
 	}
 }
 
@@ -384,38 +460,35 @@ double TotalSquareUsed(vector<Figure>& scene)
 	{
 		switch (scene[i].type_id)
 		{
-		case figure_list::Circ:
-		{
-			
-			Circle* Cir_ptr;
-			Cir_ptr = static_cast<Circle*>(scene[i].fptr);
-			TotalSquare += Cir_ptr->getSquare();
-			break;
-		}
-		case figure_list::Rect:
-		{
-			
-			Rectangle* Rec_ptr;
-			Rec_ptr = static_cast<Rectangle*>(scene[i].fptr);
-			TotalSquare += Rec_ptr->getSquare();
-			break;
-		}
-		case figure_list::Hex:
-		{
-			
-			Hexagon* Hex_ptr;
-			Hex_ptr = static_cast<Hexagon*>(scene[i].fptr);
-			TotalSquare += Hex_ptr->getSquare();
-			break;
-		}
-		case figure_list::Empty:
-		{
-			TotalSquare += 0;
-			break;
-		}
-		default:
-			//cout << "type_id error in vector's element" << endl;
-			break;
+			case figure_list::Circ:
+			{
+				Circle* Cir_ptr;
+				Cir_ptr = static_cast<Circle*>(scene[i].fptr);
+				TotalSquare += Cir_ptr->getSquare();
+				break;
+			}
+			case figure_list::Rect:
+			{			
+				Rectangle* Rec_ptr;
+				Rec_ptr = static_cast<Rectangle*>(scene[i].fptr);
+				TotalSquare += Rec_ptr->getSquare();
+				break;
+			}
+			case figure_list::Hex:
+			{			
+				Hexagon* Hex_ptr;
+				Hex_ptr = static_cast<Hexagon*>(scene[i].fptr);
+				TotalSquare += Hex_ptr->getSquare();
+				break;
+			}
+			case figure_list::Empty:
+			{
+				TotalSquare += 0;
+				break;
+			}
+			default:
+				//cout << "type_id error in vector's element" << endl;
+				break;
 		}
 	}
 	
@@ -428,7 +501,7 @@ int main(void)
 	vector<Figure> Scene;
 
 	/////////////////////////////////fill scene test/////////////////////////////////////////////////
-	Scene.resize(5);
+	Scene.resize(10);
 	fillScene(Scene);
 
 	cout << endl << "fillScene test" << endl;
