@@ -142,7 +142,7 @@ public:
 
 	void setRadius(double rad)
 	{
-		this->radius = rad;
+		radius = rad;
 	}
 
 };
@@ -231,17 +231,17 @@ public:
 	void* fptr = nullptr;
 };
 
-bool intersection(Rectangle a, Rectangle b)
+bool intersection(const Rectangle a, const Rectangle b)
 {
-	double ax1 = a.getBoundingRect().getX1();
-	double ay1 = a.getBoundingRect().getY1();
-	double ax2 = a.getBoundingRect().getX2();
-	double ay2 = a.getBoundingRect().getY2();
+	double ax1 = a.x1;
+	double ay1 = a.y1;
+	double ax2 = a.x2;
+	double ay2 = a.y2;
 
-	double bx1 = b.getBoundingRect().getX1();
-	double by1 = b.getBoundingRect().getY1();
-	double bx2 = b.getBoundingRect().getX2();
-	double by2 = b.getBoundingRect().getY2();
+	double bx1 = b.x1;
+	double by1 = b.y1;
+	double bx2 = b.x2;
+	double by2 = b.y2;
 
 	
 	// ax2 < bx1 ---> no intersection on X
@@ -403,6 +403,38 @@ Rectangle Bounding_Rect(Figure* f)
 	}
 }
 
+double GetSquare(Figure* f)
+{
+	switch (f->type_id)
+	{
+		case figure_list::Circ:
+		{
+			Circle* Cir_ptr;
+			Cir_ptr = static_cast<Circle*>(f->fptr);
+			return Cir_ptr->getSquare();
+		}
+		case figure_list::Rect:
+		{
+			Rectangle* Rec_ptr;
+			Rec_ptr = static_cast<Rectangle*>(f->fptr);
+			return Rec_ptr->getSquare();
+		}
+		case figure_list::Hex:
+		{
+			Hexagon* Hex_ptr;
+			Hex_ptr = static_cast<Hexagon*>(f->fptr);
+			return Hex_ptr->getSquare();
+		}
+		case figure_list::Empty:
+		{
+			return 0;
+		}
+	default:
+		break;
+	}
+	return 0;//?????????
+}
+
 bool Scene_Intersection(Figure* f, vector<Figure>& scene)
 {
 	for (int i = 0; i < scene.size(); i++)
@@ -458,42 +490,13 @@ double TotalSquareUsed(vector<Figure>& scene)
 
 	for (int i = 0; i < scene.size(); i++)
 	{
-		switch (scene[i].type_id)
-		{
-			case figure_list::Circ:
-			{
-				Circle* Cir_ptr;
-				Cir_ptr = static_cast<Circle*>(scene[i].fptr);
-				TotalSquare += Cir_ptr->getSquare();
-				break;
-			}
-			case figure_list::Rect:
-			{			
-				Rectangle* Rec_ptr;
-				Rec_ptr = static_cast<Rectangle*>(scene[i].fptr);
-				TotalSquare += Rec_ptr->getSquare();
-				break;
-			}
-			case figure_list::Hex:
-			{			
-				Hexagon* Hex_ptr;
-				Hex_ptr = static_cast<Hexagon*>(scene[i].fptr);
-				TotalSquare += Hex_ptr->getSquare();
-				break;
-			}
-			case figure_list::Empty:
-			{
-				TotalSquare += 0;
-				break;
-			}
-			default:
-				//cout << "type_id error in vector's element" << endl;
-				break;
-		}
+		TotalSquare += GetSquare(&scene[i]);
 	}
 	
 	return TotalSquare;
 }
+
+//void PrintScene(vector<Figure>& scene)
 
 
 int main(void)
@@ -546,8 +549,8 @@ int main(void)
 		}
 	}
 	
-	
 	cout << "Total Square Used = " << TotalSquareUsed(Scene) << endl;
+
 
 
 
