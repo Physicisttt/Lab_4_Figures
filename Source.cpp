@@ -496,7 +496,61 @@ double TotalSquareUsed(vector<Figure>& scene)
 	return TotalSquare;
 }
 
-//void PrintScene(vector<Figure>& scene)
+void PrintFigure(Figure* f)
+{
+	switch (f->type_id)
+	{
+	case figure_list::Circ:
+	{
+		Circle* Cir_ptr;
+		Cir_ptr = static_cast<Circle*>(f->fptr);
+		cout << "CIRCLE" << endl;
+		cout << "Radius: " << Cir_ptr->getRadius() << endl;
+		cout << "x: " << Cir_ptr->getX_Centre() << " y: " << Cir_ptr->getY_Centre() << endl;
+		Cir_ptr->getBoundingRect().print_rec();
+		cout << endl;
+		break;
+	}
+
+	case figure_list::Rect:
+	{
+		Rectangle* Rec_ptr;
+		Rec_ptr = static_cast<Rectangle*>(f->fptr);
+		cout << "RECTANGLE" << endl;
+		Rec_ptr->getBoundingRect().print_rec();
+		cout << endl;
+		break;
+	}
+
+	case figure_list::Hex:
+	{
+		Hexagon* Hex_ptr;
+		Hex_ptr = static_cast<Hexagon*>(f->fptr);
+		cout << "HEXAGON" << endl;
+		Hex_ptr->getBoundingRect().print_rec();
+		cout << endl;
+		break;
+	}
+
+	case figure_list::Empty:
+	{
+		cout << "EMPTY FIGURE!" << endl;
+	}
+
+	default:
+		//cout << "createFigure error!" << endl;
+		break;
+	}
+}
+
+void PrintScene(vector<Figure>& scene)
+{
+	for (int i = 0; i < scene.size(); i++)
+	{
+		cout << "Figure " << i << " is ";
+		PrintFigure(&scene[i]);
+	}
+}
 
 
 int main(void)
@@ -507,47 +561,8 @@ int main(void)
 	Scene.resize(10);
 	fillScene(Scene);
 
-	cout << endl << "fillScene test" << endl;
-	for (int i = 0; i < Scene.size(); i++)
-	{
-		cout << "type: " << Scene[i].type_id << endl;
-		switch (Scene[i].type_id)
-		{
-			case figure_list::Circ:
-			{
-				cout << "figure " << i << " is Circle" << endl;
-				Circle* Cir_ptr;
-				Cir_ptr = static_cast<Circle*>(Scene[i].fptr);//if null
-				Cir_ptr->getBoundingRect().print_rec();
-				break;
-			}
-			case figure_list::Rect:
-			{
-				cout << "figure " << i << " is Rectangle" << endl;
-				Rectangle* Rec_ptr;
-				Rec_ptr = static_cast<Rectangle*>(Scene[i].fptr);//if null
-				//Rec_ptr->print_rec();
-				Rec_ptr->getBoundingRect().print_rec();
-				break;
-			}
-			case figure_list::Hex:
-			{
-				cout << "figure " << i << " is Hexagon" << endl;
-				Hexagon* Hex_ptr;
-				Hex_ptr = static_cast<Hexagon*>(Scene[i].fptr);//if null
-				Hex_ptr->getBoundingRect().print_rec();
-				break;
-			}
-			case figure_list::Empty:
-			{
-				cout << "EMPTY FIGURE!" << endl;
-				break;
-			}
-			default:
-				//cout << "type_id error in vector's element" << endl;
-				break;
-		}
-	}
+	cout << endl << "Scene:" << endl;
+	PrintScene(Scene);
 	
 	cout << "Total Square Used = " << TotalSquareUsed(Scene) << endl;
 
