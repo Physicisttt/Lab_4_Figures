@@ -58,17 +58,7 @@ public:
 
 	Rectangle getBoundingRect()
 	{
-		Rectangle R;
-
-		//x1 y1
-		R.x1 = x1;
-		R.y1 = y1;
-
-		//x2 y2
-		R.x2 = x2;
-		R.y2 = y2;
-
-		return R;
+		return *this;
 	}
 
 	void setCoordinates(double x_topleft, double y_topleft, double x_downright, double y_downright)//setX & setY
@@ -518,6 +508,8 @@ void PrintFigure(Figure* f)
 		Rectangle* Rec_ptr;
 		Rec_ptr = static_cast<Rectangle*>(f->fptr);
 		cout << "RECTANGLE" << endl;
+		cout << "x1 = "<< Rec_ptr->x1 << " y1 = " << Rec_ptr->y1 << endl
+			<< "x2 = "<< Rec_ptr->x2 << " y2 = " << Rec_ptr->y2 << endl;
 		Rec_ptr->getBoundingRect().print_rec();
 		cout << endl;
 		break;
