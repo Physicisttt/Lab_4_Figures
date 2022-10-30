@@ -460,26 +460,27 @@ bool Scene_Intersection(Figure* f, vector<Figure>& scene)
 
 void fillScene(vector<Figure>& scene)
 {
-	for (int i = 0; i < scene.size(); i++)
+	int i = -1;
+	int attempts = 0;
+	while (attempts <= 100)
 	{
-		bool flag = false;
-		int attempts = 0;
-		while (!flag)
-		{
-			attempts++;
-			if (attempts >= 100)
-			{
-				cout << ">100 attempts, something may be wrong!!!" << endl;
-			}
+		attempts++;
 
-			Figure* newFigure = createFigure();
-			if (!Scene_Intersection(newFigure, scene))
-			{
-				cout << "succesfully created figure "<< i << " on " << attempts << " attempt" << endl;
-				flag = true;
-				scene[i].type_id = newFigure->type_id;
-				scene[i].fptr = newFigure->fptr;
-			}
+		if (attempts == 99)
+		{
+			cout << "99 attempts! Last figure number = " << i << endl;
+		}
+
+		Figure* newFigure = createFigure();
+		if (!Scene_Intersection(newFigure, scene))
+		{
+			i++;
+			cout << "succesfully created figure " << i << " on " << attempts << " attempt" << endl;
+			scene.resize(i + 1);
+			scene[i].type_id = newFigure->type_id;
+			scene[i].fptr = newFigure->fptr;
+
+			attempts = 0;
 		}
 	}
 }
@@ -558,7 +559,7 @@ int main(void)
 	vector<Figure> Scene;
 
 	/////////////////////////////////fill scene test/////////////////////////////////////////////////
-	Scene.resize(10);
+	//Scene.resize(10);
 	fillScene(Scene);
 
 	cout << endl << "Scene:" << endl;
