@@ -135,6 +135,13 @@ public:
 		radius = rad;
 	}
 
+	void printCircle()
+	{
+		cout << "CIRCLE" << endl;
+		cout << "Radius: " << radius << endl;
+		cout << "x: " << x_centre << " y: " << y_centre << endl;
+	}
+
 };
 
 class Hexagon {
@@ -210,6 +217,11 @@ public:
 	void setLength(double len)
 	{
 		this->length = len;
+	}
+
+	void printHexagon()
+	{
+		cout << "HEXAGON" << endl;
 	}
 
 };
@@ -456,11 +468,6 @@ void fillScene(vector<Figure>& scene)
 	{
 		attempts++;
 
-		if (attempts == 99)
-		{
-			cout << "99 attempts! Last figure number = " << i << endl;
-		}
-
 		Figure* newFigure = createFigure();
 		if (!Scene_Intersection(newFigure, scene))
 		{
@@ -495,9 +502,7 @@ void PrintFigure(Figure* f)
 	{
 		Circle* Cir_ptr;
 		Cir_ptr = static_cast<Circle*>(f->fptr);
-		cout << "CIRCLE" << endl;
-		cout << "Radius: " << Cir_ptr->getRadius() << endl;
-		cout << "x: " << Cir_ptr->getX_Centre() << " y: " << Cir_ptr->getY_Centre() << endl;
+		Cir_ptr->printCircle();
 		Cir_ptr->getBoundingRect().print_rec();
 		cout << endl;
 		break;
@@ -508,8 +513,7 @@ void PrintFigure(Figure* f)
 		Rectangle* Rec_ptr;
 		Rec_ptr = static_cast<Rectangle*>(f->fptr);
 		cout << "RECTANGLE" << endl;
-		cout << "x1 = "<< Rec_ptr->x1 << " y1 = " << Rec_ptr->y1 << endl
-			<< "x2 = "<< Rec_ptr->x2 << " y2 = " << Rec_ptr->y2 << endl;
+		Rec_ptr->print_rec();
 		Rec_ptr->getBoundingRect().print_rec();
 		cout << endl;
 		break;
@@ -519,7 +523,7 @@ void PrintFigure(Figure* f)
 	{
 		Hexagon* Hex_ptr;
 		Hex_ptr = static_cast<Hexagon*>(f->fptr);
-		cout << "HEXAGON" << endl;
+		Hex_ptr->printHexagon();
 		Hex_ptr->getBoundingRect().print_rec();
 		cout << endl;
 		break;
@@ -558,8 +562,6 @@ int main(void)
 	PrintScene(Scene);
 	
 	cout << "Total Square Used = " << TotalSquareUsed(Scene) << endl;
-
-
 
 
 	return 1;
